@@ -17,10 +17,11 @@ def process(job: Job):
     app_id = data.get('app_id')
     request = data.get('request')
     requirements = data.get('requirements', [])
-    output_folder = data.get('outputFolder', 'output')
+    output_prefix = request.get('outputPrefix', 'ComfyUI')
 
     # 创建一个临时目录，用于存放输出
-    os.makedirs(os.path.join(ROOT_DIR, output_folder), exist_ok=True)
+    output_folder = os.path.dirname(os.path.join(ROOT_DIR, output_prefix))
+    os.makedirs(output_folder, exist_ok=True)
 
     for item in requirements:
         file_path = os.path.join(ROOT_DIR, item.get('path'), item.get('filename'))
