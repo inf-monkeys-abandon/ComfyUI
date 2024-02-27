@@ -12,13 +12,16 @@ import json
 
 ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
 
-server_address = '127.0.0.1:8188'
-client_id = str(uuid.uuid4())
-ws = websocket.WebSocket()
-ws.connect("ws://{}/ws?clientId={}".format(server_address, client_id))
+
+def open_websocket():
+    server_address = '127.0.0.1:8188'
+    client_id = str(uuid.uuid4())
+    ws = websocket.WebSocket()
+    ws.connect("ws://{}/ws?clientId={}".format(server_address, client_id))
+    return client_id, ws
 
 
-def track_progress(prompt, prompt_id):
+def track_progress(ws, prompt, prompt_id):
     node_ids = list(prompt.keys())
     finished_nodes = []
 
@@ -83,7 +86,6 @@ def process(job: Job):
     logging.info(f'Prompt ID: {prompt_id}')
 
     # 轮询结果
-    logging.info('Polling result')
     # status = ""
     # timeout_time = time.time() + 60 * 5
     # while status != "success":
@@ -93,7 +95,9 @@ def process(job: Job):
     #     if time.time() > timeout_time:
     #         raise Exception("运行 ComfyUI 超时")
     #     time.sleep(1)
-    track_progress(prompt=request['prompt'], prompt_id=prompt_id)
+    client_id, ws = open_websocket()
+    logging.info(f'Polling result of client: {client_id}, prompt_id: {prompt_id}')
+    track_progress(ws=ws, prompt=request['prompt'], prompt_id=prompt_id)
 
     # 上传图片
     hrefs = []
