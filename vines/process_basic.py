@@ -17,14 +17,14 @@ def process(job: Job):
     app_id = data.get('app_id')
     request = data.get('request')
     requirements = data.get('requirements', [])
-    output_prefix = request.get('outputPrefix', 'ComfyUI')
+    output_folder_tmp = request.get('outputFolder')
 
     # 创建一个临时目录，用于存放输出
-    output_folder = os.path.dirname(os.path.join(ROOT_DIR, output_prefix))
+    output_folder = os.path.dirname(os.path.join(ROOT_DIR, "output", output_folder_tmp))
     os.makedirs(output_folder, exist_ok=True)
 
     for item in requirements:
-        file_path = os.path.join(ROOT_DIR, item.get('path'), item.get('filename'))
+        file_path = os.path.join(ROOT_DIR, 'input', item.get('path'), item.get('filename'))
         if not os.path.exists(file_path):
             url = item.get('url')
             logging.info(f'Downloading {url} to {file_path}')
@@ -53,7 +53,7 @@ def process(job: Job):
     # 上传图片
     hrefs = []
     # 遍历 output 下的图片
-    for image_path in pathlib.Path(output_folder).glob('*.png'):
+    for image_path in pathlib.Path(output_folder).glob('*.{png,jpg,jpeg,web,gif,mp4,mp3}'):
         # 上传图片
         key = f'artworks/{uuid.uuid1().hex}-{image_path.name}'
         api.upload_image_to_s3(config.S3_PUBLIC_BUCKET, key, image_path.read_bytes())
@@ -62,6 +62,7 @@ def process(job: Job):
         logging.info(f'Image uploaded: {href}')
 
     logging.info('Image upload finished')
+    logging.info("Uploaded images: ", hrefs)
 
     # 汇报进度
     return {
