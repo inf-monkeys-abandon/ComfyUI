@@ -65,6 +65,7 @@ def process(job: Job):
     requirements = data.get('requirements', [])
     output_folder_tmp = request.get('outputFolder')
     print(f"Output Folder: {output_folder_tmp}")
+    client_id, ws = open_websocket()
 
     # 创建一个临时目录，用于存放输出
     output_folder = os.path.dirname(os.path.join(ROOT_DIR, "output", output_folder_tmp))
@@ -80,6 +81,7 @@ def process(job: Job):
 
     # 发送请求
     logging.info('Sending request')
+    request['client_id'] = client_id
     res = api.post_prompt(request)
 
     prompt_id = res.get("prompt_id")
@@ -95,7 +97,6 @@ def process(job: Job):
     #     if time.time() > timeout_time:
     #         raise Exception("运行 ComfyUI 超时")
     #     time.sleep(1)
-    client_id, ws = open_websocket()
     logging.info(f'Polling result of client: {client_id}, prompt_id: {prompt_id}')
     track_progress(ws=ws, prompt=request['prompt'], prompt_id=prompt_id)
 
