@@ -140,7 +140,7 @@ def process(job: Job):
         # 上传图片
         filename = image_path.split("/")[-1]
         key = f'artworks/{uuid.uuid1().hex}-{filename}'
-        with open('yourfile.txt', 'rb') as file:
+        with open(image_path, 'rb') as file:
             file_content_as_bytes = file.read()
             api.upload_image_to_s3(config.S3_PUBLIC_BUCKET, key, file_content_as_bytes)
             href = f'{config.OSS_BASE_URL}/{key}'
