@@ -18,10 +18,12 @@ def process(job: Job):
     request = data.get('request')
     requirements = data.get('requirements', [])
     output_folder_tmp = request.get('outputFolder')
+    print(f"Output Folder: {output_folder_tmp}")
 
     # 创建一个临时目录，用于存放输出
     output_folder = os.path.dirname(os.path.join(ROOT_DIR, "output", output_folder_tmp))
     os.makedirs(output_folder, exist_ok=True)
+    print(f"Create folder Folder if not exists {output_folder}")
 
     for item in requirements:
         file_path = os.path.join(ROOT_DIR, 'input', item.get('path'), item.get('filename'))
@@ -62,7 +64,6 @@ def process(job: Job):
         logging.info(f'Image uploaded: {href}')
 
     logging.info('Image upload finished')
-    logging.info("Uploaded images: ", hrefs)
 
     # 汇报进度
     return {
