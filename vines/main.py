@@ -68,6 +68,5 @@ def sigint_handler(sig, frame):
 
 
 if __name__ == "__main__":
-    signal.signal(signal.SIGINT, sigint_handler)
-
+    # signal.signal(signal.SIGINT, sigint_handler)
     asyncio.run(main())
