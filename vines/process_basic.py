@@ -51,6 +51,7 @@ def process(job: Job):
             raise Exception("Prompt failed")
         if time.time() > timeout_time:
             raise Exception("Prompt timeout")
+        time.sleep(1)
 
     # 上传图片
     hrefs = []
