@@ -55,13 +55,23 @@ def process(job: Job):
     # 上传图片
     hrefs = []
     # 遍历 output 下的图片
-    for image_path in pathlib.Path(output_folder).glob('*.{png,jpg,jpeg,web,gif,mp4,mp3}'):
-        # 上传图片
-        key = f'artworks/{uuid.uuid1().hex}-{image_path.name}'
-        api.upload_image_to_s3(config.S3_PUBLIC_BUCKET, key, image_path.read_bytes())
-        href = f'{config.OSS_BASE_URL}/{key}'
-        hrefs.append(href)
-        logging.info(f'Image uploaded: {href}')
+    file_exts = [
+        'png',
+        'jpeg',
+        'jpg',
+        'webp',
+        'gif',
+        'mp4',
+        'mp3'
+    ]
+    for ext in file_exts:
+        for file_path in pathlib.Path(output_folder).glob(f'*.{ext}'):
+            # 上传图片
+            key = f'artworks/{uuid.uuid1().hex}-{file_path.name}'
+            api.upload_image_to_s3(config.S3_PUBLIC_BUCKET, key, file_path.read_bytes())
+            href = f'{config.OSS_BASE_URL}/{key}'
+            hrefs.append(href)
+            logging.info(f'Uploaded {file_path} to {href}')
 
     logging.info('Image upload finished')
 
