@@ -24,9 +24,9 @@ def track_progress(prompt, prompt_id):
 
     while True:
         out = ws.recv()
+        print(f"receive message: {out}")
         if isinstance(out, str):
             message = json.loads(out)
-            print(f"receive message: {out}")
             if message['type'] == 'progress':
                 data = message['data']
                 current_step = data['value']
@@ -45,6 +45,10 @@ def track_progress(prompt, prompt_id):
 
                 if data['node'] is None and data['prompt_id'] == prompt_id:
                     break  # Execution is done
+            if message['type'] == 'status':
+                queue_remaining = message.get('data', {}).get('status', {}).get('exec_info', {}).get('queue_remaining')
+                if queue_remaining == 0:
+                    break
         else:
             continue
     return
