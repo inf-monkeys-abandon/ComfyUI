@@ -1,0 +1,6 @@
+requests
+redis
+boto3
+bullmq==2.2.1
+python-dotenv
+websocket-client
