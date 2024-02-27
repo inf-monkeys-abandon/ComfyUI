@@ -43,7 +43,9 @@ def process(job: Job):
     timeout_time = time.time() + 60 * 5
     while status != "success":
         res = api.get_task(prompt_id)
+        print("res: ", res)
         status = res.get(prompt_id, {}).get("status", {}).get("status_str")
+        print("status: ", status)
         if status == "error":
             logging.error(res)
             raise Exception("Prompt failed")

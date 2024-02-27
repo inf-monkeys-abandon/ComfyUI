@@ -1410,6 +1410,7 @@ export class ComfyApp {
 
 					let widgetCreated = true;
 					const widgetType = self.getWidgetType(inputData, inputName);
+					console.log(nodeId, inputName, widgetType)
 					if(widgetType) {
 						if(widgetType === "COMBO") {
 							Object.assign(config, self.widgets.COMBO(this, inputName, inputData, app) || {});
@@ -1431,7 +1432,7 @@ export class ComfyApp {
 						config.widget.options.defaultInput = inputData[1].defaultInput;
 					}
 				}
-
+				console.log(config)
 				for (const o in nodeData["output"]) {
 					let output = nodeData["output"][o];
 					if(output instanceof Array) output = "COMBO";
