@@ -46,7 +46,6 @@ def process(job: Job):
     while status != "success":
         res = api.get_task(prompt_id)
         if res:
-            print("res: ", res)
             break
         if time.time() > timeout_time:
             raise Exception("运行 ComfyUI 超时")
