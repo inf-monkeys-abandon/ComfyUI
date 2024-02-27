@@ -57,6 +57,26 @@ def track_progress(ws, prompt, prompt_id):
     return
 
 
+def get_image_path(filename, subfolder):
+    return os.path.join(ROOT_DIR, "output", subfolder, filename)
+
+
+def get_images(prompt_id):
+    output_images = []
+    history = api.get_task(prompt_id)[prompt_id]
+    for node_id in history['outputs']:
+        node_output = history['outputs'][node_id]
+        if 'images' in node_output:
+            for image in node_output['images']:
+                # if allow_preview and image['type'] == 'temp':
+                #     preview_data = get_image(image['filename'], image['subfolder'], image['type'], server_address)
+                #     output_data['image_data'] = preview_data
+                if image['type'] == 'output':
+                    image_path = get_image_path(image['filename'], image['subfolder'])
+                    output_images.append(image_path)
+    return output_images
+
+
 def process(job: Job):
     data = job.data
     token = data.get('token')
@@ -103,23 +123,29 @@ def process(job: Job):
     # 上传图片
     hrefs = []
     # 遍历 output 下的图片
-    file_exts = [
-        'png',
-        'jpeg',
-        'jpg',
-        'webp',
-        'gif',
-        'mp4',
-        'mp3'
-    ]
-    for ext in file_exts:
-        for file_path in pathlib.Path(output_folder).glob(f'*.{ext}'):
-            # 上传图片
-            key = f'artworks/{uuid.uuid1().hex}-{file_path.name}'
-            api.upload_image_to_s3(config.S3_PUBLIC_BUCKET, key, file_path.read_bytes())
+    # file_exts = [
+    #     'png',
+    #     'jpeg',
+    #     'jpg',
+    #     'webp',
+    #     'gif',
+    #     'mp4',
+    #     'mp3'
+    # ]
+    # for ext in file_exts:
+    #     for file_path in pathlib.Path(output_folder).glob(f'*.{ext}'):
+
+    generated_images = get_images(prompt_id=prompt_id)
+    for image_path in generated_images:
+        # 上传图片
+        filename = image_path.split("/")[-1]
+        key = f'artworks/{uuid.uuid1().hex}-{filename}'
+        with open('yourfile.txt', 'rb') as file:
+            file_content_as_bytes = file.read()
+            api.upload_image_to_s3(config.S3_PUBLIC_BUCKET, key, file_content_as_bytes)
             href = f'{config.OSS_BASE_URL}/{key}'
             hrefs.append(href)
-            logging.info(f'Uploaded {file_path} to {href}')
+            logging.info(f'Uploaded {image_path} to {href}')
 
     logging.info('Image upload finished')
 
