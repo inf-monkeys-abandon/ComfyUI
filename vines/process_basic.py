@@ -26,7 +26,7 @@ def track_progress(prompt, prompt_id):
         out = ws.recv()
         if isinstance(out, str):
             message = json.loads(out)
-            print("receive message: ")
+            print(f"receive message: {out}")
             if message['type'] == 'progress':
                 data = message['data']
                 current_step = data['value']
