@@ -156,8 +156,9 @@ def process_prompt(job: Job):
 
 
 def process_install_dependency(job: Job):
-    type = job.data.get('type')
-    dependency = job.data.get('data')
+    data = job.data.get('data')
+    type = data.get('type')
+    dependency = data.get('data')
     print(f"Install Dependency: {type} {dependency}", )
     if type == 'MODEL':
         api.install_node(dependency)
