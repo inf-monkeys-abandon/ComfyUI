@@ -160,7 +160,7 @@ def process_install_dependency(job: Job):
     type = data.get('type')
     dependency = data.get('data')
     print(f"Install Dependency: {type} {dependency}", )
-    if type == 'MODEL':
+    if type == 'NODE':
         api.install_node(dependency)
     elif type == 'MODEL':
         api.install_model(dependency)
