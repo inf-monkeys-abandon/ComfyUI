@@ -157,15 +157,13 @@ def process_prompt(job: Job):
 
 
 def process_install_dependency(job: Job):
-    print(job.data)
-    pass
-    # data = job.data.get('data')
-    # type = data.get('type')
-    # dependency = data.get('data')
-    # print(f"Install Dependency: {type} {dependency}", )
-    # if type == 'NODE':
-    #     install_custom_node(dependency)
-    # elif type == 'MODEL':
-    #     install_model(dependency)
-    #
-    # return {"success": True}
+    data = job.data.get('data')
+    type = data.get('type')
+    dependency = data.get('data')
+    print(f"Install Dependency: {type} {dependency}", )
+    if type == 'NODE':
+        install_custom_node(dependency)
+    elif type == 'MODEL':
+        install_model(dependency)
+
+    return {"success": True}
