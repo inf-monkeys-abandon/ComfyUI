@@ -40,7 +40,9 @@ async def process(job: Job, job_token):
 
     # api.ensure_webui()
     if type == 'process_basic':
-        result = process_basic.process(job)
+        result = process_basic.process_prompt(job)
+    elif type == 'install_dependency':
+        result = process_basic.process_install_dependency(job)
     else:
         raise Exception('不支持的任务类型')
 

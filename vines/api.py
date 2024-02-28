@@ -90,6 +90,22 @@ def post_prompt(req):
     return res.json()
 
 
+def install_node(req):
+    data = json.dumps(req).encode()
+    res = requests.post('http://localhost:8188/customnode/install',
+                        data=data, headers=JSON_HEADERS, timeout=3600)
+    raise_for_status(res, data)
+    return res.json()
+
+
+def install_model(req):
+    data = json.dumps(req).encode()
+    res = requests.post('http://localhost:8188/model/install',
+                        data=data, headers=JSON_HEADERS, timeout=3600)
+    raise_for_status(res, data)
+    return res.json()
+
+
 def upload_to_s3(bucket, key, file_path):
     s3.upload_file(file_path, bucket, key)
 

@@ -1,7 +1,5 @@
 import logging
 import os
-import time
-import pathlib
 import uuid
 
 import websocket
@@ -77,7 +75,7 @@ def get_images(prompt_id):
     return output_images
 
 
-def process(job: Job):
+def process_prompt(job: Job):
     data = job.data
     token = data.get('token')
     app_id = data.get('app_id')
@@ -155,3 +153,16 @@ def process(job: Job):
         "app_id": app_id,
         "hrefs": hrefs,
     }
+
+
+def process_install_dependency(job: Job):
+    data = job.data.data['data']
+    type = data['type']
+    dependency = data['data']
+
+    if type == 'MODEL':
+        api.install_node(dependency)
+    elif type == 'MODEL':
+        api.install_model(dependency)
+
+    return {"success": True}
