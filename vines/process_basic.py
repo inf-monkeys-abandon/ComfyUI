@@ -3,12 +3,11 @@ import os
 import uuid
 
 import websocket
-from bullmq.job import Job
-import api
-import config
 import json
-from install.model import install_model
-from install.node import install_custom_node
+from bullmq.job import Job
+from . import api, config
+from .install.model import install_model
+from .install.node import install_custom_node
 
 ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
 

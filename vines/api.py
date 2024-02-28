@@ -9,7 +9,7 @@ import traceback
 import boto3
 import requests
 from botocore.client import Config
-import config
+from . import config
 
 JSON_HEADERS = {'Content-type': 'application/json; charset=utf-8'}
 
