@@ -3,7 +3,10 @@ import urllib.request
 import zipfile
 import os
 
-from vines.install import comfy_path, js_path, custom_nodes_path, git_script_path, startup_script_path
+from git import RemoteProgress
+from tqdm import tqdm
+
+from . import comfy_path, js_path, custom_nodes_path, git_script_path, startup_script_path
 from torchvision.datasets.utils import download_url
 from urllib.parse import urlparse
 import platform
@@ -11,12 +14,23 @@ import subprocess
 import locale
 from datetime import datetime
 
-from vines.install.git_helper import GitProgress
 import threading
 
 comfy_ui_commit_datetime = datetime(1900, 1, 1, 0, 0, 0)
 comfy_ui_required_commit_datetime = datetime(2024, 1, 24, 0, 0, 0)
 comfy_ui_revision = "Unknown"
+
+
+class GitProgress(RemoteProgress):
+    def __init__(self):
+        super().__init__()
+        self.pbar = tqdm()
+
+    def update(self, op_code, cur_count, max_count=None, message=''):
+        self.pbar.total = max_count
+        self.pbar.n = cur_count
+        self.pbar.pos = 0
+        self.pbar.refresh()
 
 
 def handle_stream(stream, prefix):
@@ -76,8 +90,6 @@ except:
                 f"## [ERROR] ComfyUI-Manager: Failed to install the GitPython package in the correct Python environment. Please install it manually in the appropriate environment. (You can seek help at https://app.element.io/#/room/%23comfyui_space%3Amatrix.org)")
 
     print(f"## ComfyUI-Manager: installing dependencies done.")
-
-from git.remote import RemoteProgress
 
 
 def unzip_install(files):
