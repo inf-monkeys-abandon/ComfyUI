@@ -7,6 +7,8 @@ from bullmq.job import Job
 import api
 import config
 import json
+from install.model import install_model
+from install.node import install_custom_node
 
 ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -161,8 +163,8 @@ def process_install_dependency(job: Job):
     dependency = data.get('data')
     print(f"Install Dependency: {type} {dependency}", )
     if type == 'NODE':
-        api.install_node(dependency)
+        install_custom_node(dependency)
     elif type == 'MODEL':
-        api.install_model(dependency)
+        install_model(dependency)
 
     return {"success": True}
